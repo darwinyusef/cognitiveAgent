@@ -1,3 +1,5 @@
+from transitions import Machine
+
 class TutorFSM:
     states = [
         "START", "SELECT_COURSE", "SELECT_TOPIC",
