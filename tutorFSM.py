@@ -99,27 +99,3 @@ class TutorFSM:
     def resultado_qna(self) -> TutorTypo:
         # deepcopy para evitar efectos colaterales
         return TutorTypo(**deepcopy(self.data))
-
-# ----------- EJEMPLO DE USO -------------
-
-# Supongamos que estas variables vienen de tu pipeline o entrada
-intencion_predicha = "definicion"
-pregunta = "estoy feliz que es python"
-sentimiento = "positivo"
-
-fsm = TutorFSM()
-fsm.begin()
-fsm.answer_course({"course": "Python"})
-fsm.answer_topic({"topic": "Funciones"})
-fsm.answer_level({"level": "Medio"})
-fsm.generar_prompt_agente({"intencion": intencion_predicha})
-fsm.continue_learning()
-fsm.question({
-    "intencion": intencion_predicha,
-    "question": pregunta,
-    "sentimiento": sentimiento
-})
-
-finalResult: TutorTypo = fsm.resultado_qna
-
-print(finalResult.json(indent=2, ensure_ascii=False))
