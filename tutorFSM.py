@@ -2,7 +2,6 @@ from transitions import Machine
 from pydantic import BaseModel
 from typing import Optional, Dict
 from copy import deepcopy
-import json
 
 class TutorTypo(BaseModel):
     pregunta: str
@@ -33,7 +32,6 @@ class TutorFSM:
             "contenido": ""
         }
 
-        # Definir estados
         states = [
             "start",
             "course_selected",
@@ -45,18 +43,17 @@ class TutorFSM:
             "completed"
         ]
 
-        # Definir transiciones
         transitions = [
             {"trigger": "begin", "source": "start", "dest": "course_selected"},
             {"trigger": "answer_course", "source": "course_selected", "dest": "topic_selected", "after": "set_course"},
             {"trigger": "answer_topic", "source": "topic_selected", "dest": "level_selected", "after": "set_topic"},
             {"trigger": "answer_level", "source": "level_selected", "dest": "prompt_generated", "after": "set_level"},
-            {"trigger": "generar_prompt_agente", "source": "prompt_generated", "dest": "ready_for_learning", "after": "generar_prompt_agente"},
-            {"trigger": "continue_learning", "source": "ready_for_learning", "dest": "question_asked"},
+            # <-- triggers renamed to avoid collision with method names:
+            {"trigger": "generar_prompt", "source": "prompt_generated", "dest": "ready_for_learning", "after": "generar_prompt_agente"},
+            {"trigger": "start_learning", "source": "ready_for_learning", "dest": "question_asked", "after": "continue_learning"},
             {"trigger": "question", "source": "question_asked", "dest": "completed", "after": "set_question"},
         ]
 
-        # Crear la máquina de estados
         self.machine = Machine(model=self, states=states, transitions=transitions, initial="start")
 
     def set_course(self, payload: Dict):
@@ -68,12 +65,12 @@ class TutorFSM:
     def set_level(self, payload: Dict):
         self.data["nivel"] = payload.get("level", "")
 
+    # callback name kept, but trigger is different ("generar_prompt")
     def generar_prompt_agente(self, payload: Dict):
         intencion = payload.get("intencion", "")
         curso = self.data.get("curso", "")
         tema = self.data.get("tema", "")
         nivel = self.data.get("nivel", "")
-
         prompt = (
             f"Eres un tutor de {curso}. El usuario quiere aprender sobre {tema} "
             f"en un nivel {nivel}. La intención es '{intencion}'. "
@@ -81,15 +78,15 @@ class TutorFSM:
         )
         self.data["prompt"] = prompt
 
-    def continue_learning(self):
-        # Puedes agregar lógica extra aquí si quieres
-        pass
+    # callback name kept, trigger is "start_learning"
+    def continue_learning(self, payload: Dict = None):
+        # lógica extra opcional
+        return
 
     def set_question(self, payload: Dict):
         self.data["intension"] = payload.get("intencion", "")
         self.data["pregunta"] = payload.get("question", "")
         self.data["sentimiento"] = payload.get("sentimiento", "")
-        # Ejemplo de respuesta generada (podrías reemplazar por LLM)
         self.data["respuestaIA"] = "¡Genial que estés motivado! 🚀"
         self.data["respuestaAgent"] = ""
         self.data["questionarios"] = ""
@@ -97,5 +94,4 @@ class TutorFSM:
 
     @property
     def resultado_qna(self) -> TutorTypo:
-        # deepcopy para evitar efectos colaterales
         return TutorTypo(**deepcopy(self.data))
