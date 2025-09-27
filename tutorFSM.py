@@ -1,6 +1,6 @@
 from transitions import Machine
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 from copy import deepcopy
 
 class TutorTypo(BaseModel):
