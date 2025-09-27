@@ -1,0 +1,1 @@
+Una función en Python es un bloque de código que solo se ejecuta cuando es llamado. Puede recibir parámetros, retornar valores y encapsular lógica reutilizable. A nivel intermedio, se destacan: parámetros por defecto, *args, **kwargs, funciones anidadas, y funciones lambda.
