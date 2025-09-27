@@ -1,0 +1,12 @@
+Ejemplo con parámetros por defecto:
+def saludar(nombre, saludo='Hola'):
+    return f'{saludo}, {nombre}'
+
+Ejemplo con *args:
+def sumar(*numeros):
+    return sum(numeros)
+
+Ejemplo con **kwargs:
+def mostrar_info(**datos):
+    for k, v in datos.items():
+        print(f'{k}: {v}')
