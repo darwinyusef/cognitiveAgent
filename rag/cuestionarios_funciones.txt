@@ -1,0 +1,17 @@
+1. ¿Qué hace la siguiente función?
+def cuadrado(x): return x ** 2
+a) Multiplica por 2
+b) Eleva al cuadrado
+c) Nada
+Respuesta: b
+
+2. ¿Verdadero o Falso? Una función puede devolver múltiples valores.
+Respuesta: Verdadero
+
+3. ¿Cuál es la salida?
+def f(a, b=2): return a * b
+print(f(3))
+a) 5
+b) 3
+c) 6
+Respuesta: c
